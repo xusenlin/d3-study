@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>d3</title>
+    <style>
+
+        .bar {
+            fill: steelblue;
+        }
+
+        .bar:hover {
+            fill: brown;
+        }
+        .text{
+
+        }
+    </style>
+</head>
+<body>
+<div id="g2">
+    <svg width="960" height="500"></svg>
+</div>
+
+<script src="js/d3.v4.js"></script>
+<script>
+    var data = [];
+    var  randVal = Math.random()*30;
+    var num = randVal > 5 ? randVal : 10 ;
+    for (var i = 0 ; i<= num ;i++){
+        data.push((Math.random()*20).toFixed(2));
+    }
+    console.log(data);
+    var maxVal = Math.max.apply(null,data);
+    //var data = [12,3,4,5,11,10,(Math.random()*10).toFixed(2)];
+    var svg = d3.select("svg"),
+            margin = {top: 20, right: 20, bottom: 30, left: 40},
+            width = +svg.attr("width") - margin.left - margin.right,
+            height = +svg.attr("height") - margin.top - margin.bottom;
+
+    var scale = d3.scaleLinear()
+            .domain([0,maxVal])
+            .range([0,height]);
+
+    var g = svg.append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    g.selectAll('rect')
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("class", "bar")
+            .attr("x", function(d,i) { return (width/data.length)*i; })
+            .attr("y", function (d) {
+                return height-scale(d);
+            })
+            .attr("width", function () {
+                return (width/data.length)-6+'px'
+            })
+            .attr("height", function(d) {
+                console.log('=>'+d);
+                return scale(d);
+            });
+
+    g.selectAll('text')
+            .data(data)
+            .enter()
+            .append('text')
+            .attr("class", "text")
+            .text(function (d) {
+                return d;
+            })
+            .attr('x',function(d,i) { return (width/data.length)*i; })
+            .attr("y", function (d) {
+                return height-scale(d)-6;
+            })
+            .attr("transform", "translate("+((width/data.length)-6)/2+",0)")
+            .attr("text-anchor", 'middle');
+
+</script>
+</body>
+</html>
